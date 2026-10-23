@@ -100,3 +100,11 @@ input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid
 .alc{border-left:6px solid var(--ac)}.alc b{display:block}
 .ab{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .tst{font-size:.85rem}
+
+/* selected-day panel + alert body */
+.dayp{margin-top:6px;border-top:1px solid var(--ln);padding-top:2px}
+.dayp .btn{padding:4px 12px;font-size:.78rem}
+.dtk{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px dashed var(--ln)}
+.dtk.dn span{text-decoration:line-through;opacity:.6}
+.dtk small{text-align:right}
+.alc .m{white-space:pre-line;margin-top:4px}
