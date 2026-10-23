@@ -27,8 +27,18 @@
  <label>Add a video (kept for this session)</label><input type="file" accept="video/*" id="fvd">
  <label>Seconds per photo</label><input type="range" min="2" max="10" data-s="iv">
  <div style="margin-top:8px"><button class="btn o" data-a="clr">Clear media</button></div>
+ <h4>Reminders &amp; alarm</h4>
+ <label>Alarm</label><select data-s="rm"><option value="1">On</option><option value="0">Off</option></select>
+ <label>Remind me</label><select data-s="ld"><option value="0">At the time</option><option value="5">5 min before</option><option value="10">10 min before</option><option value="30">30 min before</option></select>
+ <label>Alarm sound</label><select data-s="sn"><option value="chime">Chime</option><option value="bell">Bell</option><option value="beep">Beep</option><option value="digital">Digital</option><option value="soft">Soft</option><option value="custom">My own sound</option></select>
+ <label>Upload your own sound (mp3, wav…)</label><input type="file" accept="audio/*" id="fsn"><small class="m" id="sfn" style="display:block"></small>
+ <label>Volume</label><input type="range" min="0" max="100" data-s="vl">
+ <label>Ring</label><select data-s="rp"><option value="1">Once</option><option value="3">3 times</option><option value="5">5 times</option><option value="0">Until I dismiss it</option></select>
+ <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn o" data-a="tsnd">▶ Test sound</button><button class="btn o" data-a="ntf">Browser alerts</button><button class="btn o" data-a="csn">Remove my sound</button></div>
  <h4>Widgets</h4><div id="wl"></div>
  <h4>Data</h4><button class="btn o" data-a="reset">Reset everything</button>
 </aside>
+
+<div id="al" aria-live="assertive"></div>
 
 <script src="script.js"></script></body></html>
