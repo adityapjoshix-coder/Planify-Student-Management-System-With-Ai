@@ -1,3 +1,5 @@
-FROM nginx:alpine
-COPY index.html style.css script.js /usr/share/nginx/html/
-EXPOSE 80
+FROM node:22-alpine
+WORKDIR /app
+COPY . .
+EXPOSE 10000
+CMD ["node", "server.js"]
