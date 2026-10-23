@@ -1,5 +1,5 @@
 var K='planify.dash.v3',$=function(s){return document.querySelector(s)},$$=function(s){return[].slice.call(document.querySelectorAll(s))};
-var DEF={name:'Alex Morgan',role:'Student',ac:'#6C7AF2',theme:'auto',r:14,bt:'Welcome to Planify',bx:'Your whole school week in one place. Click any text to edit it.',mm:'text',ph:[],iv:4,bs:'dock',ap:'claude',pq:'',tx:'',td:'',ou:'http://localhost:11434',om:'llama3.2',au:'https://api.openai.com/v1',ak:'',am:'gpt-4o-mini',rep:'',rm:'1',ld:'0',sn:'chime',vl:80,rp:'3',sf:'',
+var DEF={name:'Alex Morgan',role:'Student',ac:'#6C7AF2',theme:'auto',r:14,bt:'Welcome to Planify',bx:'Your whole school week in one place. Click any text to edit it.',mm:'text',ph:[],iv:4,bs:'dock',ap:'server',pq:'',tx:'',td:'',ou:'http://localhost:11434',om:'llama3.2',au:'https://api.openai.com/v1',ak:'',am:'gpt-4o-mini',rep:'',rm:'1',ld:'0',sn:'chime',vl:80,rp:'3',sf:'',
 order:{main:['banner','thought','stats','inbox','tasks','exams'],side:['calendar','sched']},hide:{},
 stats:[{t:'Project Frog Surgery',s:'Biology',n:'Due 12 Aug, 10:45',p:75},{t:'Project Earth Quantum',s:'Physics',n:'Due 14 Aug, 3:00 PM',p:60}],
 inbox:[{n:'Dorothy Richards',t:'09:32',m:'Don’t forget to work on assignment page 36.',f:'Homework.pdf'},{n:'Ernest Williamson',t:'23:45',m:'Have you made the history assignment?',f:'Syllabus History.pdf'}],
@@ -12,6 +12,7 @@ var TT={thought:'Thought of the day',banner:'Welcome media',stats:'Project stati
 var V={stats:'report',tasks:'task',exams:'test'},AV=['#B7E4C7','#FFD9C2','#BFE6F5','#D9D6FA','#FFE9A8','#F9C6CF'];
 var st,view='home',mn=null,VID=null,tm=null,ctl=null,now=new Date(),cur={y:now.getFullYear(),m:now.getMonth()},sel=dk(now),showAll=false,SNZ=[],FR={},rt=null,ca=null,AC=null,SNDURL=null;
 try{st=Object.assign(JSON.parse(JSON.stringify(DEF)),JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){st=JSON.parse(JSON.stringify(DEF))}
+if(st.ap!=='ollama')st.ap='server';
 if(st.order.main.indexOf('thought')<0)st.order.main.splice(1,0,'thought');
 st.tasks.forEach(function(t){if(!t.dt)t.dt=dk(now)});
 try{FR=JSON.parse(localStorage.getItem('planify.fired')||'{}')}catch(z){}
@@ -38,13 +39,13 @@ calendar:function(){
  var HAS=hasMap(),f=new Date(cur.y,cur.m,1),lead=(f.getDay()+6)%7,dim=new Date(cur.y,cur.m+1,0).getDate(),h='<tr>'+['Mo','Tu','We','Th','Fr','Sa','Su'].map(function(d){return'<th>'+d+'</th>'}).join('')+'</tr><tr>';
  for(var i=0;i<lead;i++)h+='<td></td>';
  for(var d=1;d<=dim;d++){if((lead+d-1)%7===0&&d>1)h+='</tr><tr>';var t=cur.y===now.getFullYear()&&cur.m===now.getMonth()&&d===now.getDate(),key=cur.y+'-'+pad(cur.m+1)+'-'+pad(d);h+='<td><button data-a="day" data-p="'+d+'" class="'+(t?'t ':'')+(key===sel?'s ':'')+(HAS[key]?'h':'')+'">'+d+'</button></td>'}
- return'<section class="w"><div class="wh"><h3>Calendar</h3><span><button class="x" data-a="cal" data-p="-1" aria-label="Previous month">‹</button> '+new Date(cur.y,cur.m,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'})+' <button class="x" data-a="cal" data-p="1" aria-label="Next month">›</button></span></div><table class="cal">'+h+'</tr></table></section>'},
+ var dl=dayList(sel),dn=new Date(sel+'T00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}),dp='<div class="dayp"><div class="wh" style="margin:10px 0 6px"><b>'+dn+'</b><button class="btn" data-a="alertday" title="Alert me about this day\'s tasks">🔔 Alert</button></div>'+(dl.length?dl.map(function(x){return'<div class="dtk'+(x.d?' dn':'')+'"><span>'+esc(x.t)+'</span><small class="m">'+esc(x.m||'')+(x.s?' · '+esc(x.s):'')+(x.d?' · done':'')+'</small></div>'}).join(''):'<small class="m">No tasks saved for this day.</small>')+'</div>';
+ return'<section class="w"><div class="wh"><h3>Calendar</h3><span><button class="x" data-a="cal" data-p="-1" aria-label="Previous month">‹</button> '+new Date(cur.y,cur.m,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'})+' <button class="x" data-a="cal" data-p="1" aria-label="Next month">›</button></span></div><table class="cal">'+h+'</tr></table>'+dp+'</section>'},
 sched:function(){return'<section class="w">'+H('sched',1)+st.sched.map(function(s,i){var q='sched.'+i+'.';return'<div class="row"><div class="av" style="background:'+AV[i%6]+'">'+esc((s.s||'?').charAt(0).toUpperCase())+'</div><div class="g">'+e(q+'s',s.s,'b')+e(q+'n',s.n,'m')+e(q+'tm',s.tm||'Add time…','m')+(s.x!=null?e(q+'x',s.x,'m'):'')+'</div>'+(s.b?'🔔':'')+'<div class="mw"><button class="x" data-a="menu" data-i="'+i+'" aria-label="Options">⋯</button>'+(mn===i?'<div class="menu"><button data-a="note" data-i="'+i+'">Add note</button><button data-a="edit" data-i="'+i+'">Edit</button><button data-a="bell" data-i="'+i+'">Notify me</button><button data-a="del" data-p="sched" data-i="'+i+'">Delete</button></div>':'')+'</div></div>'}).join('')+'</section>'}};
 function R(){
- var p=st.ap,f='',n='',op=[['claude','Claude (built in)'],['ollama','Ollama (local)'],['openai','OpenAI-compatible']].map(function(o){return'<option value="'+o[0]+'"'+(o[0]===p?' selected':'')+'>'+o[1]+'</option>'}).join('');
- if(p==='ollama')f='<input data-s="ou" value="'+esc(st.ou)+'" aria-label="Ollama URL"><input data-s="om" value="'+esc(st.om)+'" aria-label="Model">';
- if(p==='openai'){f='<input data-s="au" value="'+esc(st.au)+'" aria-label="API base URL"><input type="password" data-s="ak" value="'+esc(st.ak)+'" placeholder="API key" aria-label="API key" autocomplete="off"><input data-s="am" value="'+esc(st.am)+'" aria-label="Model">';n='<small class="m" style="margin-bottom:8px">Works with OpenAI, Groq, OpenRouter, Gemini (OpenAI mode) and similar. Your key stays in this browser only.</small>'}
- if(p==='claude')n='<small class="m" style="margin-bottom:8px">Uses Claude directly, no setup. Available on the hosted page.</small>';
+ var p=st.ap,f='',n='',op=[['server','Planify AI (free, runs on Render)'],['ollama','Ollama (local, on your own PC)']].map(function(o){return'<option value="'+o[0]+'"'+(o[0]===p?' selected':'')+'>'+o[1]+'</option>'}).join('');
+ if(p==='ollama'){f='<input data-s="ou" value="'+esc(st.ou)+'" aria-label="Ollama URL"><input data-s="om" value="'+esc(st.om)+'" aria-label="Model">';n='<small class="m" style="margin-bottom:8px">Ollama only works when Planify is opened on the same computer that runs Ollama.</small>'}
+ else n='<small class="m" style="margin-bottom:8px">Free AI hosted by your Planify server. No key needed on this page.</small>';
  return'<section class="w rep"><div class="wh"><h3>AI report</h3></div><div class="card"><div class="rr"><select data-s="ap" aria-label="AI provider">'+op+'</select>'+f+'</div>'+n+'<div class="rr"><input data-s="pq" value="'+esc(st.pq)+'" placeholder="Ask anything, e.g. Make me a study plan for Thursday" aria-label="Your prompt"><button class="btn" data-a="gen">Send</button><button class="btn o" data-a="gen" data-p="report">Weekly report</button><button class="btn o" data-a="stop">Stop</button></div><div class="out2" id="rep">'+esc(st.rep||'Type a question and press Send, or tap “Weekly report” for a summary of your tasks, exams and projects.')+'</div></div></section>'}
 function render(){
  var s=document.documentElement.style;s.setProperty('--ac',st.ac);s.setProperty('--r',st.r+'px');
@@ -65,28 +66,30 @@ function sync(){$$('#dr [data-s]').forEach(function(i){i.value=st[i.dataset.s]})
 async function eachLine(r,fn){var rd=r.body.getReader(),dc=new TextDecoder(),buf='';for(;;){var x=await rd.read();if(x.done)break;buf+=dc.decode(x.value,{stream:true});var ls=buf.split('\n');buf=ls.pop();ls.forEach(function(l){if(l.trim())fn(l.trim())})}}
 async function gen(mode){
  var o=$('#rep');o.textContent='';ctl=new AbortController();
- var q=(mode==='report'?'':(st.pq||'').trim()),p0=q?'You are a friendly study coach for the student '+st.name+'. Answer this question, using their planner data where relevant: '+q+'\n':'You are a friendly study coach. Write a short weekly report (summary, risks, 3 next steps) for the student '+st.name+'.\n',p=p0+'Tasks: '+st.tasks.map(function(t){return t.t+' ('+t.s+', '+t.m+', '+(t.d?'done':'pending')+')'}).join('; ')+'\nExams: '+st.exams.map(function(x){return x.s+' '+x.d+' '+x.t}).join('; ')+'\nProjects: '+st.stats.map(function(x){return x.t+' '+x.p+'% complete'}).join('; ');
+ var q=(mode==='report'?'':(st.pq||'').trim()),p0=q?'You are a friendly study coach for the student '+st.name+'. Today is '+dk(new Date())+'. Answer this question, using their planner data where relevant: '+q+'\n':'You are a friendly study coach. Today is '+dk(new Date())+'. Write a short weekly report (summary, risks, 3 next steps) for the student '+st.name+'.\n',p=p0+'Tasks: '+st.tasks.map(function(t){return t.t+' ('+t.s+', '+(t.dt||'no date')+' '+t.m+', '+(t.d?'done':'pending')+')'}).join('; ')+'\nExams: '+st.exams.map(function(x){return x.s+' '+x.d+' '+x.t}).join('; ')+'\nProjects: '+st.stats.map(function(x){return x.t+' '+x.p+'% complete'}).join('; ');
  try{
-  if(st.ap==='claude'){
-   var sm=window.claude&&claude.use?await claude.use('sample'):null;
-   if(!sm)throw new Error('Built-in Claude only runs on the hosted page. Choose Ollama or OpenAI-compatible here.');
-   var rr=await sm(p,{signal:ctl.signal,cache:false,onText:function(x){o.textContent=x.text}});o.textContent=rr.text;
-  }else if(st.ap==='openai'){
-   if(!st.ak)throw new Error('Enter your API key first.');
-   var r=await fetch(st.au.replace(/\/$/,'')+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+st.ak},body:JSON.stringify({model:st.am,stream:true,messages:[{role:'user',content:p}]}),signal:ctl.signal});
-   if(!r.ok)throw new Error('HTTP '+r.status+' (check key, model and base URL)');
-   await eachLine(r,function(l){if(l.indexOf('data:')!==0||l.indexOf('[DONE]')>0)return;try{o.textContent+=JSON.parse(l.slice(5)).choices[0].delta.content||''}catch(z){}});
-  }else{
+  if(st.ap==='ollama'){
    var r3=await fetch(st.ou.replace(/\/$/,'')+'/api/generate',{method:'POST',body:JSON.stringify({model:st.om,prompt:p,stream:true}),signal:ctl.signal});
    if(!r3.ok)throw new Error('HTTP '+r3.status);
    await eachLine(r3,function(l){try{o.textContent+=JSON.parse(l).response||''}catch(z){}});
+  }else{
+   o.textContent='Thinking…';
+   var r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:p}),signal:ctl.signal});
+   var j=await r.json().catch(function(){return{}});
+   if(!r.ok)throw new Error(j.error||('Server error '+r.status));
+   o.textContent=j.text||'(empty reply)';
   }
   st.rep=o.textContent;save()
- }catch(z){if(z.name!=='AbortError'){o.textContent='Could not generate the report: '+(z.message||z.code)+(st.ap==='ollama'?'\n\nCheck that Ollama is running, the model is pulled, and it was started with OLLAMA_ORIGINS=*. Ollama only works from the downloaded copy.':'')}}}
+ }catch(z){if(z.name!=='AbortError'){o.textContent='Could not generate the report: '+(z.message||z.code)+(st.ap==='ollama'?'\n\nCheck that Ollama is running, the model is pulled, and it was started with OLLAMA_ORIGINS=*.':'\n\nIf this is your own Render site, check that the AI_API_KEY environment variable is set (see README).')}}}
 
 /* ---------- date helpers ---------- */
 function pad(n){return(n<10?'0':'')+n}
 function dk(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function dayList(k){return st.tasks.filter(function(t){return t.dt===k}).sort(function(a,b){return(pt(a.m)==null?1e4:pt(a.m))-(pt(b.m)==null?1e4:pt(b.m))})}
+function alertDay(){var k=sel,dl=dayList(k).filter(function(t){return!t.d}),all=dayList(k),dn=new Date(k+'T00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+ if(!all.length){note('No tasks saved for '+dn+'.');return}
+ if(!dl.length){note('All '+all.length+' task'+(all.length>1?'s':'')+' on '+dn+' are done. Nice work!');return}
+ askN();fire([{title:dl.length+' pending task'+(dl.length>1?'s':'')+' · '+dn,body:dl.map(function(t){return(t.m?t.m+' – ':'')+t.t+(t.s?' ('+t.s+')':'')}).join('\n')}],true)}
 function hasMap(){var o={};st.tasks.forEach(function(t){if(t.dt)o[t.dt]=1});return o}
 function pt(s){s=String(s||'');var m=/(\d{1,2})(?:\s*[:.]\s*(\d{2}))?\s*([ap])\.?m\b/i.exec(s)||/(\d{1,2})\s*[:.]\s*(\d{2})()/.exec(s);if(!m)return null;var h=+m[1],n=+(m[2]||0),ap=(m[3]||'').toLowerCase();if(ap==='p'&&h<12)h+=12;if(ap==='a'&&h===12)h=0;if(h>23||n>59)return null;return h*60+n}
 
@@ -104,7 +107,7 @@ function ring(reps){stopRing();var n=0,vol=Math.max(0,Math.min(1,(+st.vl||0)/100
  })()}
 function note(msg){var d=document.createElement('div');d.className='tst';d.textContent=msg;$('#al').appendChild(d);setTimeout(function(){d.remove()},5500)}
 function askN(v){if(!window.Notification){if(v)note('This browser can’t show system alerts. In-page alarms still work.');return}if(Notification.permission==='default'||v)Notification.requestPermission().then(function(r){if(v)note(r==='granted'?'Browser alerts are on.':'Browser alerts are blocked. In-page alarms and sound still work.')})}
-function fire(L){var it2=L.length>3?[{title:L.length+' reminders due',body:L.map(function(x){return x.title}).join(', ')}]:L;
+function fire(L,solo){var it2=(L.length>3&&!solo)?[{title:L.length+' reminders due',body:L.map(function(x){return x.title}).join(', ')}]:L;
  it2.forEach(function(it){var d=document.createElement('div');d.className='alc';d.innerHTML='<b>'+esc(it.title)+'</b><span class="m">'+esc(it.body||'')+'</span><div class="ab"><button class="btn o" data-a="snz">Snooze 5 min</button><button class="btn" data-a="ok">Dismiss</button></div>';d._it=it;$('#al').appendChild(d);try{if(window.Notification&&Notification.permission==='granted')new Notification('Planify · '+it.title,{body:it.body||''})}catch(z){}});
  ring(+st.rp)}
 function items(){var L=[],n=new Date(),td=dk(n),wd=['sun','mon','tue','wed','thu','fri','sat'][n.getDay()];
@@ -154,6 +157,7 @@ document.addEventListener('click',function(ev){
  else if(a==='clr'){st.ph=[];VID=null;st.mm='text';sync()}
  else if(a==='reset'){if(!confirm('Reset all Planify data and settings?'))return;st=JSON.parse(JSON.stringify(DEF));VID=null;sync()}
  else if(a==='all'){showAll=!showAll}
+ else if(a==='alertday'){alertDay();return}
  else if(a==='tsnd'){ring(1);return}
  else if(a==='ntf'){askN(true);return}
  else if(a==='csn'){clrSnd();return}
@@ -169,4 +173,5 @@ document.addEventListener('keydown',function(ev){if(ev.key==='Enter'&&ev.target.
 document.addEventListener('input',function(ev){var t=ev.target,k=t.dataset&&t.dataset.s;if(!k)return;st[k]=(t.type==='range')?+t.value:t.value;save();if(['ou','om','au','ak','am','pq','vl','sn','rm','ld','rp'].indexOf(k)<0)render()});
 document.addEventListener('change',function(ev){var t=ev.target;if(t.dataset&&t.dataset.w){st.hide[t.dataset.w]=!t.checked;save();render()}
  else if(t.dataset&&t.dataset.dt!=null){st.tasks[+t.dataset.dt].dt=t.value||dk(now);save();render()}});
+window.addEventListener('pagehide',save);window.addEventListener('beforeunload',save);
 sync();render();loadSnd();chk();setInterval(chk,15000);document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()});
