@@ -89,4 +89,14 @@ input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid
 .sw{display:flex;gap:6px;margin-top:6px}.sw button{width:26px;height:26px;border-radius:50%;border:2px solid var(--cd);box-shadow:0 0 0 1px var(--ln)}
 .wr{display:flex;align-items:center;gap:6px;padding:4px 0}.wr span{flex:1}
 .wr button{border:1px solid var(--ln);background:none;border-radius:6px;width:26px;height:26px}
-@media(prefers-reduced-motion:reduce){.banner,.banner.out{animation:none}.ban img{transition:none}}
+@media(prefers-reduced-motion:reduce){.banner,.banner.out,.alc,.tst{animation:none}.ban img{transition:none}}
+/* date-aware tasks + alarms */
+.dti{display:block;width:auto;margin-top:4px;padding:2px 6px;font-size:.72rem}
+.cal button{position:relative}
+.cal button.h::after{content:"";position:absolute;bottom:3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--wn)}
+.cal button.t.h::after{background:#fff}
+#al{position:fixed;left:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:90;display:grid;gap:10px;width:min(340px,calc(100vw - 36px))}
+.alc,.tst{background:var(--cd);border:1px solid var(--ln);border-radius:var(--r);padding:14px;box-shadow:0 14px 40px #0004;animation:pop .35s cubic-bezier(.2,1.3,.4,1)}
+.alc{border-left:6px solid var(--ac)}.alc b{display:block}
+.ab{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tst{font-size:.85rem}
