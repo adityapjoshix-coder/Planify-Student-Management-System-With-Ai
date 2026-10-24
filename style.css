@@ -108,3 +108,21 @@ input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid
 .dtk.dn span{text-decoration:line-through;opacity:.6}
 .dtk small{text-align:right}
 .alc .m{white-space:pre-line;margin-top:4px}
+
+/* sign in / create account */
+body.locked .shell,body.locked #dr{display:none}
+#gate{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);overflow:auto}
+.gbox{display:grid;grid-template-columns:1fr;width:min(880px,100%);background:var(--cd);border-radius:calc(var(--r) + 6px);box-shadow:0 30px 80px #6c7af233;overflow:hidden;animation:pop .35s cubic-bezier(.2,1.3,.4,1)}
+@media(min-width:760px){.gbox{grid-template-columns:1.05fr 1fr}}
+.gside{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;padding:36px 32px;display:flex;flex-direction:column;justify-content:flex-end;min-height:170px}
+.gside h2{margin:0 0 8px;font-size:1.8rem;line-height:1.15;font-weight:600}.gside p{margin:0;opacity:.92}
+.gform{padding:32px}
+.gtabs{display:flex;gap:6px;background:var(--bg);padding:4px;border-radius:99px;margin-bottom:12px}
+.gtabs button{flex:1;border:0;background:none;border-radius:99px;padding:8px;color:var(--mu);font-weight:500}
+.gtabs button[aria-selected="true"]{background:var(--cd);color:var(--ink);box-shadow:0 2px 8px #0002}
+.gform label{display:block;font-size:.78rem;color:var(--mu);margin:12px 0 4px}
+.gform input{padding:10px 12px}
+.gform .btn{width:100%;margin-top:16px;padding:11px}
+.btn:disabled{opacity:.6;cursor:wait}
+#gerr{color:#E5484D;font-size:.82rem;min-height:1.3em;margin-top:10px}
+.gfoot{display:block;font-size:.74rem;color:var(--mu);margin:8px 0 0}
