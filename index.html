@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Planify: Student Planner</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css"></head><body>
+<link rel="stylesheet" href="style.css"></head><body class="locked">
 <div class="shell">
 <header class="top">
  <div class="logo"><i></i>Planify</div>
@@ -16,6 +16,8 @@
 
 <aside id="dr" aria-label="Customize">
  <div class="ch"><b>Customize</b><button class="x" data-a="dr" aria-label="Close">×</button></div>
+ <h4>Account</h4><b id="aname"></b><small class="m" id="amail"></small>
+ <div style="margin:8px 0;display:flex;gap:6px;flex-wrap:wrap"><button class="btn o" data-auth="act">My activity</button><button class="btn o" data-auth="out">Log out</button><button class="btn o" data-auth="del">Delete account</button></div><div id="actl"></div>
  <label>Your name</label><input data-s="name"><label>Role</label><input data-s="role">
  <label>Accent colour</label><input type="color" data-s="ac" style="height:36px;padding:2px">
  <div class="sw" id="sw"></div>
@@ -41,4 +43,4 @@
 
 <div id="al" aria-live="assertive"></div>
 
-<script src="script.js"></script></body></html>
+<script src="auth.js"></script></body></html>
